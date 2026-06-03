@@ -4,13 +4,19 @@
   "description": "轻量多币种汇率换算工具",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f8efe2",
-  "theme_color": "#f8efe2",
+  "background_color": "#0e3275",
+  "theme_color": "#0e3275",
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any"
     }
   ]
