@@ -20,9 +20,9 @@ FastEx is optimized not only for desktop browsers, but also for mobile web usage
 
 ## Demo
 
-Production URL:
+Official URL:
 
-- [https://fastex-henna.vercel.app](https://fastex-henna.vercel.app)
+- [https://fastex.coffeeocha.com/](https://fastex.coffeeocha.com/)
 
 ## Tech Stack
 
