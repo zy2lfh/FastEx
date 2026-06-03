@@ -1,0 +1,17 @@
+{
+  "name": "FastEx",
+  "short_name": "FastEx",
+  "description": "轻量多币种汇率换算工具",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8efe2",
+  "theme_color": "#f8efe2",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

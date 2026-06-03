@@ -1,0 +1,93 @@
+# FastEx
+
+FastEx is a lightweight multi-currency exchange app built with React, TypeScript, and Vite.
+
+It is designed for fast everyday conversions:
+
+- Add and remove currencies
+- Edit any currency amount and recalculate all others
+- Reorder currencies with a mobile-friendly sort mode
+- Use cached exchange rates for a snappy experience
+
+## Demo
+
+Production URL:
+
+- [https://fastex-henna.vercel.app](https://fastex-henna.vercel.app)
+
+## Tech Stack
+
+- React 19
+- TypeScript
+- Vite
+- Frankfurter exchange-rate API
+
+## Local Development
+
+Requirements:
+
+- Node.js 20+
+- npm 10+
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the dev server:
+
+```bash
+npm run dev
+```
+
+Create a production build:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Project Structure
+
+```text
+src/
+  App.tsx
+  main.tsx
+  styles.css
+  lib/
+    currencies.ts
+    rates.ts
+  types.ts
+public/
+  favicon.svg
+  site.webmanifest
+```
+
+## Data Source
+
+FastEx currently uses the Frankfurter API for exchange-rate data:
+
+- https://www.frankfurter.app/
+
+Exchange rates are cached in the browser to reduce repeated requests and improve responsiveness.
+
+## Deployment
+
+This project is configured to work well with Vercel.
+
+Recommended deployment flow:
+
+1. Push the code to GitHub
+2. Import or connect the repository in Vercel
+3. Set the production branch to `main`
+4. Let Vercel auto-deploy on every push
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](/Users/fanghuali/Documents/fastex/LICENSE).

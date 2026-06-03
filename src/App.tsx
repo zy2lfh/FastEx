@@ -1,0 +1,480 @@
+import { useEffect, useMemo, useState } from "react";
+import { fetchCurrencies, getCurrencyFlag } from "./lib/currencies";
+import { convertAmount, fetchRates, formatAmount } from "./lib/rates";
+import type { CurrencyOption, CurrencyRow, RatesSnapshot } from "./types";
+
+const DEFAULT_ROWS: CurrencyRow[] = [
+  { id: crypto.randomUUID(), code: "USD", amount: "1" },
+  { id: crypto.randomUUID(), code: "CNY", amount: "" },
+  { id: crypto.randomUUID(), code: "JPY", amount: "" }
+];
+
+const REFRESH_MINUTES = 30;
+const ROWS_STORAGE_KEY = "fastex:rows";
+
+function loadInitialRows() {
+  try {
+    const raw = localStorage.getItem(ROWS_STORAGE_KEY);
+    if (!raw) {
+      return DEFAULT_ROWS;
+    }
+
+    const parsed = JSON.parse(raw) as CurrencyRow[];
+    if (!Array.isArray(parsed) || parsed.length < 2) {
+      return DEFAULT_ROWS;
+    }
+
+    return parsed.map((row) => ({
+      id: row.id || crypto.randomUUID(),
+      code: row.code,
+      amount: row.amount ?? ""
+    }));
+  } catch {
+    return DEFAULT_ROWS;
+  }
+}
+
+function App() {
+  const [currencies, setCurrencies] = useState<CurrencyOption[]>([]);
+  const [rows, setRows] = useState<CurrencyRow[]>(() => loadInitialRows());
+  const [sourceRowId, setSourceRowId] = useState<string>(() => loadInitialRows()[0].id);
+  const [lastUpdatedText, setLastUpdatedText] = useState<string>("");
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [snapshot, setSnapshot] = useState<RatesSnapshot | null>(null);
+  const [isSortMode, setIsSortMode] = useState<boolean>(false);
+  const [swipedRowId, setSwipedRowId] = useState<string | null>(null);
+  const [dragRowId, setDragRowId] = useState<string | null>(null);
+  const [draggingVisualId, setDraggingVisualId] = useState<string | null>(null);
+  const [replaceArmedRowId, setReplaceArmedRowId] = useState<string | null>(null);
+  const [touchSort, setTouchSort] = useState<{ rowId: string; y: number } | null>(null);
+  const [touchSwipe, setTouchSwipe] = useState<{ rowId: string; x: number } | null>(null);
+
+  useEffect(() => {
+    fetchCurrencies().then(setCurrencies);
+  }, []);
+
+  useEffect(() => {
+    if (currencies.length < 2) {
+      return;
+    }
+
+    const allowedCodes = new Set(currencies.map((currency) => currency.code));
+    setRows((currentRows) => {
+      const kept = currentRows.filter((row) => allowedCodes.has(row.code));
+      const next = kept.length > 0 ? kept : [{ id: crypto.randomUUID(), code: currencies[0].code, amount: "1" }];
+
+      while (next.length < 2) {
+        const code = currencies.find((currency) => !next.some((row) => row.code === currency.code))?.code;
+        if (!code) {
+          break;
+        }
+        next.push({ id: crypto.randomUUID(), code, amount: "" });
+      }
+
+      const changed =
+        next.length !== currentRows.length ||
+        next.some(
+          (row, index) =>
+            row.id !== currentRows[index]?.id ||
+            row.code !== currentRows[index]?.code ||
+            row.amount !== currentRows[index]?.amount
+        );
+
+      return changed ? next : currentRows;
+    });
+  }, [currencies]);
+
+  useEffect(() => {
+    localStorage.setItem(ROWS_STORAGE_KEY, JSON.stringify(rows));
+  }, [rows]);
+
+  const currencyMap = useMemo(
+    () => new Map(currencies.map((currency) => [currency.code, currency])),
+    [currencies]
+  );
+  const currencyCodesKey = rows.map((row) => row.code).join(",");
+  const sourceRow = useMemo(
+    () => rows.find((row) => row.id === sourceRowId) ?? rows[0],
+    [rows, sourceRowId]
+  );
+  const sourceAmountText = sourceRow?.amount ?? "";
+  const sourceCode = sourceRow?.code ?? "";
+
+  useEffect(() => {
+    if (!rows.some((row) => row.id === sourceRowId) && rows[0]) {
+      setSourceRowId(rows[0].id);
+    }
+  }, [rows, sourceRowId]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const quoteCodes = currencyCodesKey.split(",").filter(Boolean);
+
+    async function refreshRates() {
+      if (!sourceRow || !sourceCode) {
+        return;
+      }
+
+      if (sourceAmountText.trim() === "") {
+        setRows((currentRows) =>
+          currentRows.map((row) => (row.id === sourceRow.id ? row : { ...row, amount: "" }))
+        );
+        return;
+      }
+
+      const sourceAmount = Number(sourceAmountText);
+      if (Number.isNaN(sourceAmount)) {
+        return;
+      }
+
+      setIsRefreshing(true);
+      setError("");
+
+      try {
+        const latest = await fetchRates(sourceCode, quoteCodes);
+
+        if (cancelled) {
+          return;
+        }
+
+        setRows((currentRows) =>
+          currentRows.map((row) => {
+            if (row.id === sourceRow.id) {
+              return row;
+            }
+
+            const value = convertAmount(sourceAmount, sourceCode, row.code, latest);
+            return {
+              ...row,
+              amount: formatAmount(value)
+            };
+          })
+        );
+
+        setLastUpdatedText(new Date(latest.fetchedAt).toLocaleString());
+        setSnapshot(latest);
+      } catch {
+        if (!cancelled) {
+          setError("汇率更新失败，已尝试使用缓存数据，请稍后重试。");
+        }
+      } finally {
+        if (!cancelled) {
+          setIsRefreshing(false);
+        }
+      }
+    }
+
+    refreshRates();
+    const timer = window.setInterval(refreshRates, REFRESH_MINUTES * 60 * 1000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [sourceAmountText, sourceCode, sourceRow, currencyCodesKey]);
+
+  function updateAmount(id: string, amount: string) {
+    setSourceRowId(id);
+    setReplaceArmedRowId(null);
+    setRows((currentRows) =>
+      currentRows.map((row) => (row.id === id ? { ...row, amount } : row))
+    );
+  }
+
+  function updateCurrency(id: string, code: string) {
+    setSourceRowId(id);
+    setRows((currentRows) =>
+      currentRows.map((row) => (row.id === id ? { ...row, code } : row))
+    );
+  }
+
+  function addRow() {
+    const available =
+      currencies.find((currency) => !rows.some((row) => row.code === currency.code)) ??
+      currencies[0];
+
+    if (!available) {
+      return;
+    }
+
+    setRows((currentRows) => [
+      ...currentRows,
+      { id: crypto.randomUUID(), code: available.code, amount: "" }
+    ]);
+  }
+
+  function removeRow(id: string) {
+    if (rows.length <= 2) {
+      return;
+    }
+
+    setRows((currentRows) => currentRows.filter((row) => row.id !== id));
+    setSwipedRowId(null);
+  }
+
+  function getRateNote(rowId: string, rowCode: string) {
+    if (!snapshot || !sourceCode) {
+      return "";
+    }
+
+    if (rowId === sourceRowId) {
+      return "Input currency";
+    }
+
+    try {
+      const value = convertAmount(1, sourceCode, rowCode, snapshot);
+      return `1 ${sourceCode} = ${formatAmount(value)} ${rowCode}`;
+    } catch {
+      return "";
+    }
+  }
+
+  function reorderRows(fromIndex: number, toIndex: number) {
+    if (fromIndex === toIndex || toIndex < 0 || toIndex >= rows.length) {
+      return;
+    }
+
+    setRows((currentRows) => {
+      const next = [...currentRows];
+      const [moved] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, moved);
+      return next;
+    });
+    setSwipedRowId(null);
+  }
+
+  function handleTouchSortStart(rowId: string, y: number) {
+    setSwipedRowId(null);
+    setTouchSwipe(null);
+    setDraggingVisualId(rowId);
+    setTouchSort({ rowId, y });
+  }
+
+  function handleTouchSortMove(y: number) {
+    if (!touchSort) {
+      return;
+    }
+
+    const fromIndex = rows.findIndex((row) => row.id === touchSort.rowId);
+    if (fromIndex < 0) {
+      return;
+    }
+
+    const delta = y - touchSort.y;
+    if (Math.abs(delta) < 24) {
+      return;
+    }
+
+    const toIndex = delta > 0 ? fromIndex + 1 : fromIndex - 1;
+    reorderRows(fromIndex, toIndex);
+    setTouchSort({ rowId: touchSort.rowId, y });
+  }
+
+  function handleTouchSwipeStart(rowId: string, x: number) {
+    setTouchSwipe({ rowId, x });
+  }
+
+  function handleTouchSwipeMove(x: number) {
+    if (!touchSwipe) {
+      return;
+    }
+
+    const delta = x - touchSwipe.x;
+    if (delta < -24) {
+      setSwipedRowId(touchSwipe.rowId);
+    }
+    if (delta > 16) {
+      setSwipedRowId(null);
+    }
+  }
+
+  function toggleSortMode() {
+    setIsSortMode((current) => {
+      const next = !current;
+      if (next) {
+        setSwipedRowId(null);
+      }
+      return next;
+    });
+    setTouchSort(null);
+    setTouchSwipe(null);
+    setDragRowId(null);
+    setDraggingVisualId(null);
+    setReplaceArmedRowId(null);
+  }
+
+  function armReplaceMode(id: string, currentValue: string, input: HTMLInputElement) {
+    setSourceRowId(id);
+    if (currentValue.trim() !== "") {
+      setReplaceArmedRowId(id);
+      requestAnimationFrame(() => input.select());
+      return;
+    }
+    setReplaceArmedRowId(null);
+  }
+
+  return (
+    <main className="shell">
+      <section className="board">
+        <div className="topmeta">
+          <p>
+            {isRefreshing
+              ? "Updating..."
+              : lastUpdatedText
+                ? `Last updated ${lastUpdatedText}`
+                : "Loading..."}
+          </p>
+        </div>
+        <div className="topbar">
+          <div className="brand">
+            <h1>FastEx</h1>
+          </div>
+          <div className="top-actions">
+            <button
+              className={`sort-toggle ${isSortMode ? "active" : ""}`}
+              onClick={toggleSortMode}
+              type="button"
+            >
+              {isSortMode ? "完成排序" : "排序"}
+            </button>
+            <button className="ghost-button" onClick={addRow} type="button">
+              + 添加
+            </button>
+          </div>
+        </div>
+
+        <div className={`rows ${isSortMode ? "sort-mode" : ""}`}>
+          {rows.map((row, index) => (
+            <article
+              className={`row-shell ${swipedRowId === row.id ? "swiped" : ""} ${isSortMode ? "sort-mode" : ""}`}
+              key={row.id}
+            >
+              <button
+                aria-label={`删除 ${row.code}`}
+                className="swipe-delete"
+                onClick={() => removeRow(row.id)}
+                type="button"
+              >
+                Delete
+              </button>
+              <div
+                className={`currency-row ${index === 0 ? "base active" : ""} ${isSortMode ? "sorting-enabled" : ""} ${draggingVisualId === row.id ? "floating" : ""}`}
+                draggable={isSortMode}
+                onClick={() => setSwipedRowId(null)}
+                onDragEnd={() => {
+                  setDragRowId(null);
+                  setDraggingVisualId(null);
+                }}
+                onDragOver={(event) => {
+                  if (isSortMode) {
+                    event.preventDefault();
+                  }
+                }}
+                onDragStart={(event) => {
+                  if (!isSortMode) {
+                    return;
+                  }
+                  event.dataTransfer.effectAllowed = "move";
+                  event.dataTransfer.setData("text/plain", row.id);
+                  setDragRowId(row.id);
+                  setDraggingVisualId(row.id);
+                }}
+                onDrop={() => {
+                  if (!isSortMode) {
+                    return;
+                  }
+                  if (!dragRowId || dragRowId === row.id) {
+                    return;
+                  }
+                  const fromIndex = rows.findIndex((item) => item.id === dragRowId);
+                  reorderRows(fromIndex, index);
+                  setDragRowId(null);
+                  setDraggingVisualId(null);
+                }}
+                onTouchEnd={() => {
+                  setTouchSort(null);
+                  setTouchSwipe(null);
+                  setDraggingVisualId(null);
+                }}
+                onTouchMove={(event) => {
+                  const touch = event.touches[0];
+                  if (isSortMode) {
+                    event.preventDefault();
+                    handleTouchSortMove(touch.clientY);
+                    return;
+                  }
+                  handleTouchSwipeMove(touch.clientX);
+                }}
+                onTouchStart={(event) => {
+                  if (isSortMode) {
+                    handleTouchSortStart(row.id, event.touches[0].clientY);
+                    return;
+                  }
+                  const touch = event.touches[0];
+                  handleTouchSwipeStart(row.id, touch.clientX);
+                }}
+              >
+                <div className="currency-main">
+                  <div className="currency-top">
+                    <label className="code-field">
+                      <span className="flag-badge" aria-hidden="true">
+                        {getCurrencyFlag(row.code)}
+                      </span>
+                      <select
+                        disabled={isSortMode}
+                        value={row.code}
+                        onChange={(event) => updateCurrency(row.id, event.target.value)}
+                      >
+                        {currencies.map((currency) => (
+                          <option key={currency.code} value={currency.code}>
+                            {currency.code}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <input
+                      className={`amount-input ${replaceArmedRowId === row.id ? "replace-armed" : ""}`}
+                      disabled={isSortMode}
+                      inputMode="decimal"
+                      onBlur={() => {
+                        if (replaceArmedRowId === row.id) {
+                          setReplaceArmedRowId(null);
+                        }
+                      }}
+                      onChange={(event) => updateAmount(row.id, event.target.value)}
+                      onFocus={(event) => armReplaceMode(row.id, row.amount, event.currentTarget)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          event.currentTarget.blur();
+                        }
+                      }}
+                      onMouseUp={(event) => {
+                        if (replaceArmedRowId === row.id) {
+                          event.preventDefault();
+                          event.currentTarget.select();
+                        }
+                      }}
+                      placeholder="0"
+                      type="number"
+                      value={row.amount}
+                    />
+                  </div>
+                  <div className="currency-bottom">
+                    <span className="currency-meta">{currencyMap.get(row.code)?.name ?? row.code}</span>
+                    <span className="rate-note">{getRateNote(row.id, row.code)}</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {error ? <p className="error-text">{error}</p> : null}
+      </section>
+    </main>
+  );
+}
+
+export default App;
