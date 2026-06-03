@@ -24,6 +24,10 @@ Official URL:
 
 - [https://fastex.coffeeocha.com/](https://fastex.coffeeocha.com/)
 
+Backup Vercel URL:
+
+- [https://fastex-henna.vercel.app](https://fastex-henna.vercel.app)
+
 ## Tech Stack
 
 - React 19
@@ -90,12 +94,21 @@ Exchange rates are cached in the browser to reduce repeated requests and improve
 
 This project is configured to work well with Vercel.
 
+Production traffic should use the custom domain:
+
+- [https://fastex.coffeeocha.com/](https://fastex.coffeeocha.com/)
+
+The Vercel domain remains available as a fallback URL:
+
+- [https://fastex-henna.vercel.app](https://fastex-henna.vercel.app)
+
 Recommended deployment flow:
 
 1. Push the code to GitHub
 2. Import or connect the repository in Vercel
 3. Set the production branch to `main`
-4. Let Vercel auto-deploy on every push
+4. Point the custom domain to the Vercel project
+5. Let Vercel auto-deploy on every push to `main`
 
 ## License
 
