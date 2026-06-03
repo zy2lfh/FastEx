@@ -1,5 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <rect width="128" height="128" rx="28" fill="#102320"/>
-  <path d="M28 35h72v12H42v14h48v12H42v20H28z" fill="#f7f1e6"/>
-  <circle cx="92" cy="90" r="14" fill="#f3a64b"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="FastEx icon">
+  <defs>
+    <linearGradient id="bg" x1="20" y1="16" x2="108" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1a73e8"/>
+      <stop offset="1" stop-color="#0b4db7"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="52" y1="40" x2="76" y2="88" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd76a"/>
+      <stop offset="1" stop-color="#ffb938"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="30" fill="url(#bg)"/>
+  <circle cx="64" cy="64" r="36" fill="#ffffff" fill-opacity=".14"/>
+  <path
+    d="M33 46c6-10 18-17 31-17h15l-8-8 8-8 21 21-21 21-8-8 8-8H64c-7 0-14 3-19 8-3 2-5 5-7 8z"
+    fill="#ffffff"
+  />
+  <path
+    d="M95 82c-6 10-18 17-31 17H49l8 8-8 8-21-21 21-21 8 8-8 8h15c7 0 14-3 19-8 3-2 5-5 7-8z"
+    fill="#dceaff"
+  />
+  <path
+    d="M69 33 48 67h14l-5 28 23-37H66z"
+    fill="url(#bolt)"
+  />
 </svg>
