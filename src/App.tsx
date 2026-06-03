@@ -473,6 +473,24 @@ function App() {
 
         {error ? <p className="error-text">{error}</p> : null}
       </section>
+
+      <footer className="site-footer">
+        <p>
+          FastEx is built by{" "}
+          <a href="https://coffeeocha.com/" rel="noreferrer" target="_blank">
+            CoffeeOcha
+          </a>
+          .
+        </p>
+        <p>
+          Exchange-rate data is provided via{" "}
+          <a href="https://www.frankfurter.app/" rel="noreferrer" target="_blank">
+            Frankfurter
+          </a>
+          . Rates are cached for speed and shown for reference only.
+        </p>
+        <p>Always verify important amounts with your bank, card issuer, or payment provider.</p>
+      </footer>
     </main>
   );
 }

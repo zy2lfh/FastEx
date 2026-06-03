@@ -1,11 +1,30 @@
 :root {
+  --bg-top: #eef6ff;
+  --bg-bottom: #d8e9ff;
+  --panel-top: #fbfdff;
+  --panel-bottom: #eef5ff;
+  --panel-border: rgba(53, 101, 186, 0.14);
+  --panel-shadow: rgba(18, 47, 99, 0.12);
+  --text: #10213f;
+  --text-soft: rgba(16, 33, 63, 0.62);
+  --text-faint: rgba(16, 33, 63, 0.42);
+  --blue-deep: #0e3275;
+  --blue: #1b5fda;
+  --blue-soft: #e8f1ff;
+  --blue-line: #cfe0fb;
+  --blue-line-strong: rgba(27, 95, 218, 0.34);
+  --cyan: #23c7e8;
+  --gold: #ffc248;
+  --danger: #d85050;
+  --input-border: #d8e6fb;
+  --input-bg: rgba(255, 255, 255, 0.92);
   font-family:
     "Manrope",
     "PingFang SC",
     "Noto Sans SC",
     sans-serif;
-  color: #141414;
-  background: #f2f0ea;
+  color: var(--text);
+  background: var(--bg-top);
   line-height: 1.5;
   font-weight: 500;
   font-synthesis: none;
@@ -23,8 +42,9 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.78)),
-    #f2f0ea;
+    radial-gradient(circle at top right, rgba(35, 199, 232, 0.2), transparent 26%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.58)),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
 }
 
 button,
@@ -50,9 +70,9 @@ button {
 .board {
   padding: 10px;
   border-radius: 20px;
-  border: 1px solid rgba(35, 48, 75, 0.1);
-  background: linear-gradient(180deg, #ffffff 0%, #f7f4ee 100%);
-  box-shadow: 0 14px 36px rgba(35, 48, 75, 0.08);
+  border: 1px solid var(--panel-border);
+  background: linear-gradient(180deg, var(--panel-top) 0%, var(--panel-bottom) 100%);
+  box-shadow: 0 18px 40px var(--panel-shadow);
 }
 
 .topmeta {
@@ -61,7 +81,7 @@ button {
 
 .topmeta p {
   margin: 0;
-  color: rgba(20, 20, 20, 0.45);
+  color: var(--text-faint);
   font-size: 0.75rem;
 }
 
@@ -80,6 +100,7 @@ button {
 .brand h1 {
   font-size: 1.2rem;
   letter-spacing: -0.04em;
+  color: var(--blue-deep);
 }
 
 .ghost-button {
@@ -99,9 +120,9 @@ button {
 .sort-toggle {
   padding: 9px 13px;
   border-radius: 999px;
-  border: 1px solid #d7d0c3;
-  background: #f7f2e8;
-  color: #2f3950;
+  border: 1px solid var(--blue-line);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--blue-deep);
   font-size: 0.87rem;
   transition:
     transform 200ms ease,
@@ -110,17 +131,19 @@ button {
 }
 
 .sort-toggle.active {
-  border-color: #2f5ca7;
-  background: #e9f1ff;
-  color: #1f4c96;
+  border-color: rgba(35, 199, 232, 0.32);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(232, 241, 255, 0.98));
+  color: var(--blue);
+  box-shadow: 0 8px 20px rgba(27, 95, 218, 0.12);
 }
 
 .ghost-button {
   padding: 9px 13px;
   border-radius: 999px;
-  background: #23304b;
+  background: linear-gradient(135deg, var(--blue-deep), var(--blue));
   color: #ffffff;
   font-size: 0.9rem;
+  box-shadow: 0 10px 22px rgba(14, 50, 117, 0.22);
 }
 
 .ghost-button:hover {
@@ -154,7 +177,7 @@ button {
   bottom: 0;
   width: 70px;
   border: 0;
-  background: #d64646;
+  background: linear-gradient(180deg, #eb6666, var(--danger));
   color: #ffffff;
   font-size: 0.74rem;
   transition: opacity 180ms ease;
@@ -167,8 +190,8 @@ button {
   align-items: center;
   padding: 10px 12px;
   border-radius: 16px;
-  background: linear-gradient(180deg, #fffdfa 0%, #f6f2eb 100%);
-  border: 1px solid #dfd8cc;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 247, 255, 0.98) 100%);
+  border: 1px solid rgba(90, 136, 214, 0.18);
   touch-action: pan-y;
   will-change: transform;
   transition:
@@ -182,13 +205,15 @@ button {
 }
 
 .currency-row.base {
-  border-color: rgba(31, 93, 180, 0.4);
-  background: linear-gradient(180deg, #f8fbff 0%, #edf5ff 100%);
+  border-color: var(--blue-line-strong);
+  background:
+    radial-gradient(circle at top right, rgba(255, 194, 72, 0.14), transparent 28%),
+    linear-gradient(180deg, #fafdff 0%, #eaf3ff 100%);
 }
 
 .currency-row.active {
-  border-color: rgba(35, 48, 75, 0.24);
-  box-shadow: 0 8px 22px rgba(35, 48, 75, 0.08);
+  border-color: rgba(35, 199, 232, 0.32);
+  box-shadow: 0 10px 24px rgba(25, 72, 150, 0.09);
 }
 
 .currency-main {
@@ -213,10 +238,10 @@ button {
 }
 
 .currency-row.floating {
-  border-color: rgba(31, 93, 180, 0.34);
+  border-color: rgba(35, 199, 232, 0.34);
   box-shadow:
-    0 18px 35px rgba(23, 37, 61, 0.16),
-    0 6px 14px rgba(23, 37, 61, 0.12);
+    0 18px 35px rgba(14, 50, 117, 0.18),
+    0 6px 14px rgba(14, 50, 117, 0.12);
   transform: scale(1.012);
   z-index: 3;
 }
@@ -235,14 +260,14 @@ button {
   width: 28px;
   height: 28px;
   border-radius: 999px;
-  background: #ffffff;
-  box-shadow: inset 0 0 0 1px rgba(20, 20, 20, 0.08);
+  background: linear-gradient(180deg, #ffffff, #eef5ff);
+  box-shadow: inset 0 0 0 1px rgba(27, 95, 218, 0.09);
   font-size: 0.95rem;
   flex: 0 0 auto;
 }
 
 .currency-meta {
-  color: rgba(20, 20, 20, 0.38);
+  color: var(--text-faint);
   font-size: 0.75rem;
   white-space: nowrap;
   overflow: hidden;
@@ -257,7 +282,7 @@ button {
 }
 
 .rate-note {
-  color: rgba(35, 48, 75, 0.62);
+  color: var(--text-soft);
   font-size: 0.72rem;
   text-align: right;
   white-space: nowrap;
@@ -269,9 +294,9 @@ button {
   width: 100%;
   padding: 12px 13px;
   border-radius: 14px;
-  border: 1px solid #e4e0d6;
-  background: #ffffff;
-  color: #141414;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text);
   outline: none;
 }
 
@@ -281,14 +306,14 @@ button {
 
 .code-field select:focus,
 .amount-input:focus {
-  border-color: #2b4f9b;
-  box-shadow: 0 0 0 3px rgba(43, 79, 155, 0.1);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(27, 95, 218, 0.12);
 }
 
 .code-field select:disabled,
 .amount-input:disabled {
-  color: #6d7280;
-  background: #f1f3f6;
+  color: #617090;
+  background: rgba(234, 242, 255, 0.95);
 }
 
 .amount-input {
@@ -299,18 +324,38 @@ button {
 }
 
 .amount-input.replace-armed {
-  color: rgba(20, 20, 20, 0.38);
+  color: var(--text-faint);
 }
 
 .amount-input[readonly] {
-  color: #222222;
-  background: #fafafa;
+  color: var(--text);
+  background: rgba(248, 251, 255, 0.96);
 }
 
 .error-text {
   margin: 12px 6px 4px;
-  color: #b54708;
+  color: #ad5d06;
   font-size: 0.88rem;
+}
+
+.site-footer {
+  padding: 14px 8px 2px;
+  color: var(--text-soft);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0 0 6px;
+}
+
+.site-footer a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 760px) {
