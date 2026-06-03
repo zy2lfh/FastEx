@@ -2,12 +2,21 @@
 
 FastEx is a lightweight multi-currency exchange app built with React, TypeScript, and Vite.
 
-It is designed for fast everyday conversions:
+It is designed for fast everyday conversions on both desktop and mobile web:
 
 - Add and remove currencies
 - Edit any currency amount and recalculate all others
 - Reorder currencies with a mobile-friendly sort mode
 - Use cached exchange rates for a snappy experience
+- Adapt to phone-sized screens and touch interactions
+
+## Experience
+
+FastEx is optimized not only for desktop browsers, but also for mobile web usage.
+
+- Responsive layouts adapt to smaller phone screens
+- Touch-first interactions make swipe, tap, and reordering easier on mobile devices
+- The interface is designed to stay fast and readable on both large and small screens
 
 ## Demo
 
