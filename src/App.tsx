@@ -485,9 +485,9 @@ function App() {
 
       <footer className="site-footer">
         <p>
-          FastEx was created by zy2lfh and is available on{" "}
+          FastEx was created by{" "}
           <a href="https://github.com/zy2lfh/FastEx" rel="noreferrer" target="_blank">
-            GitHub
+            zy2lfh
           </a>
           .
         </p>
