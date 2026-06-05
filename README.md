@@ -97,13 +97,21 @@ npm run preview
 src/
   App.tsx
   main.tsx
+  vite-env.d.ts
   styles.css
   lib/
+    analytics.ts
     currencies.ts
     rates.ts
   types.ts
 public/
+  apple-touch-icon.png
+  favicon-16.png
+  favicon-32.png
   favicon.svg
+  icons/
+    icon-192.png
+    icon-512.png
   site.webmanifest
 ```
 
