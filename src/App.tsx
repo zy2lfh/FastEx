@@ -46,6 +46,7 @@ function App() {
   const [swipedRowId, setSwipedRowId] = useState<string | null>(null);
   const [dragRowId, setDragRowId] = useState<string | null>(null);
   const [draggingVisualId, setDraggingVisualId] = useState<string | null>(null);
+  const [dropTargetRowId, setDropTargetRowId] = useState<string | null>(null);
   const [replaceArmedRowId, setReplaceArmedRowId] = useState<string | null>(null);
   const [touchSort, setTouchSort] = useState<{ rowId: string; y: number } | null>(null);
   const [touchSwipe, setTouchSwipe] = useState<{ rowId: string; x: number } | null>(null);
@@ -301,6 +302,7 @@ function App() {
     setTouchSwipe(null);
     setDragRowId(null);
     setDraggingVisualId(null);
+    setDropTargetRowId(null);
     setReplaceArmedRowId(null);
   }
 
@@ -359,16 +361,20 @@ function App() {
                 Delete
               </button>
               <div
-                className={`currency-row ${index === 0 ? "base active" : ""} ${isSortMode ? "sorting-enabled" : ""} ${draggingVisualId === row.id ? "floating" : ""}`}
+                className={`currency-row ${index === 0 ? "base active" : ""} ${isSortMode ? "sorting-enabled" : ""} ${draggingVisualId === row.id ? "floating sort-selected" : ""} ${dropTargetRowId === row.id && draggingVisualId !== row.id ? "sort-target" : ""}`}
                 draggable={isSortMode}
                 onClick={() => setSwipedRowId(null)}
                 onDragEnd={() => {
                   setDragRowId(null);
                   setDraggingVisualId(null);
+                  setDropTargetRowId(null);
                 }}
                 onDragOver={(event) => {
                   if (isSortMode) {
                     event.preventDefault();
+                    if (dragRowId && dragRowId !== row.id) {
+                      setDropTargetRowId(row.id);
+                    }
                   }
                 }}
                 onDragStart={(event) => {
@@ -379,6 +385,7 @@ function App() {
                   event.dataTransfer.setData("text/plain", row.id);
                   setDragRowId(row.id);
                   setDraggingVisualId(row.id);
+                  setDropTargetRowId(null);
                 }}
                 onDrop={() => {
                   if (!isSortMode) {
@@ -391,11 +398,13 @@ function App() {
                   reorderRows(fromIndex, index);
                   setDragRowId(null);
                   setDraggingVisualId(null);
+                  setDropTargetRowId(null);
                 }}
                 onTouchEnd={() => {
                   setTouchSort(null);
                   setTouchSwipe(null);
                   setDraggingVisualId(null);
+                  setDropTargetRowId(null);
                 }}
                 onTouchMove={(event) => {
                   const touch = event.touches[0];
