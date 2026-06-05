@@ -20,11 +20,11 @@ FastEx is optimized not only for desktop browsers, but also for mobile web usage
 
 ## Mobile App-like Use
 
-FastEx also works well as a home-screen web app on mobile devices.
+FastEx can also be added to your phone's home screen for a faster, more app-like experience.
 
-- On Android, open FastEx in the browser and use `Add to Home screen` or `Install app`
-- On iPhone, open FastEx in Safari and use `Share -> Add to Home Screen`
-- Once added, it can be launched from the home screen for a more app-like experience and quicker repeated access
+- On Android, open FastEx in your browser and choose `Add to Home screen` or `Install app`
+- On iPhone, open FastEx in Safari, tap `Share`, then choose `Add to Home Screen`
+- Once added, you can launch it directly from your home screen just like a lightweight app for quicker everyday use
 
 ## Demo
 
