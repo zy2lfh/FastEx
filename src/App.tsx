@@ -485,9 +485,9 @@ function App() {
 
       <footer className="site-footer">
         <p>
-          FastEx is built by{" "}
-          <a href="https://coffeeocha.com/" rel="noreferrer" target="_blank">
-            CoffeeOcha
+          FastEx source code is available on{" "}
+          <a href="https://github.com/zy2lfh/FastEx" rel="noreferrer" target="_blank">
+            GitHub
           </a>
           .
         </p>
