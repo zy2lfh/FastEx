@@ -1,14 +1,8 @@
 # FastEx
 
-## Demo
-
-Official URL:
+## Official URL:
 
 - [https://fastex.coffeeocha.com/](https://fastex.coffeeocha.com/)
-
-Backup Vercel URL:
-
-- [https://fastex-henna.vercel.app](https://fastex-henna.vercel.app)
 
 ## 中文版使用说明
 
