@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchCurrencies, getCurrencyFlag, getLocalizedCurrencyName } from "./lib/currencies";
 import {
   detectInitialLanguage,
-  getLanguageOption,
   LANGUAGE_STORAGE_KEY,
   languageOptions,
   messages,
@@ -104,7 +103,6 @@ function App() {
   }, [language]);
 
   const copy = messages[language];
-  const languageOption = getLanguageOption(language);
   const currencyMap = useMemo(
     () => new Map(currencies.map((currency) => [currency.code, currency])),
     [currencies]
@@ -360,9 +358,6 @@ function App() {
           </div>
           <div className="top-actions">
             <label className="lang-select-wrap">
-              <span className="lang-select-badge" aria-hidden="true">
-                {languageOption.flag}
-              </span>
               <select
                 aria-label={copy.languageButton}
                 className="lang-select"
@@ -470,9 +465,6 @@ function App() {
                 <div className="currency-main">
                   <div className="currency-top">
                     <label className="code-field">
-                      <span className="flag-badge" aria-hidden="true">
-                        {getCurrencyFlag(row.code)}
-                      </span>
                       <select
                         disabled={isSortMode}
                         value={row.code}
