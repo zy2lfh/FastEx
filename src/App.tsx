@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { fetchCurrencies, getCurrencyFlag } from "./lib/currencies";
+import { fetchCurrencies, getCurrencyFlag, getLocalizedCurrencyName } from "./lib/currencies";
 import {
   detectInitialLanguage,
+  getLanguageOption,
   LANGUAGE_STORAGE_KEY,
   messages,
   toggleLanguage,
@@ -103,6 +104,7 @@ function App() {
   }, [language]);
 
   const copy = messages[language];
+  const languageOption = getLanguageOption(language);
   const currencyMap = useMemo(
     () => new Map(currencies.map((currency) => [currency.code, currency])),
     [currencies]
@@ -333,6 +335,13 @@ function App() {
     ? new Date(lastUpdatedAt).toLocaleString(language)
     : "";
 
+  useEffect(() => {
+    document.documentElement.lang = copy.htmlLang;
+    document.title = "FastEx";
+    const description = document.querySelector('meta[name="description"]');
+    description?.setAttribute("content", copy.metaDescription);
+  }, [copy.htmlLang, copy.metaDescription]);
+
   return (
     <main className="shell">
       <section className="board">
@@ -352,10 +361,11 @@ function App() {
           <div className="top-actions">
             <button
               className="lang-toggle"
+              aria-label={copy.languageButton}
               onClick={() => setLanguage((current) => toggleLanguage(current))}
               type="button"
             >
-              {copy.languageSwitch}
+              <span aria-hidden="true">{languageOption.flag}</span> {languageOption.shortLabel}
             </button>
             <button
               className={`sort-toggle ${isSortMode ? "active" : ""}`}
@@ -495,7 +505,13 @@ function App() {
                     />
                   </div>
                   <div className="currency-bottom">
-                    <span className="currency-meta">{currencyMap.get(row.code)?.name ?? row.code}</span>
+                    <span className="currency-meta">
+                      {getLocalizedCurrencyName(
+                        row.code,
+                        currencyMap.get(row.code)?.name ?? row.code,
+                        language
+                      )}
+                    </span>
                     <span className="rate-note">{getRateNote(row.id, row.code)}</span>
                   </div>
                 </div>

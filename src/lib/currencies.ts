@@ -1,3 +1,4 @@
+import type { AppLanguage } from "./i18n";
 import type { CurrencyOption } from "../types";
 
 const FALLBACK_CURRENCIES: CurrencyOption[] = [
@@ -91,4 +92,76 @@ export function getCurrencyFlag(code: string) {
 
 export function hasCurrencyFlag(code: string) {
   return code in FLAG_BY_CURRENCY;
+}
+
+const LOCALIZED_CURRENCY_NAMES: Record<AppLanguage, Record<string, string>> = {
+  "zh-CN": {
+    AED: "阿联酋迪拉姆",
+    AUD: "澳大利亚元",
+    CAD: "加拿大元",
+    CHF: "瑞士法郎",
+    CNY: "人民币",
+    EUR: "欧元",
+    GBP: "英镑",
+    HKD: "港币",
+    INR: "印度卢比",
+    JPY: "日元",
+    KRW: "韩元",
+    NOK: "挪威克朗",
+    NZD: "新西兰元",
+    SGD: "新加坡元",
+    THB: "泰铢",
+    TWD: "新台币",
+    USD: "美元",
+    VND: "越南盾"
+  },
+  "en-US": {},
+  "ja-JP": {
+    AED: "UAEディルハム",
+    AUD: "オーストラリアドル",
+    CAD: "カナダドル",
+    CHF: "スイスフラン",
+    CNY: "人民元",
+    EUR: "ユーロ",
+    GBP: "英ポンド",
+    HKD: "香港ドル",
+    INR: "インドルピー",
+    JPY: "日本円",
+    KRW: "韓国ウォン",
+    NOK: "ノルウェークローネ",
+    NZD: "ニュージーランドドル",
+    SGD: "シンガポールドル",
+    THB: "タイバーツ",
+    TWD: "台湾ドル",
+    USD: "米ドル",
+    VND: "ベトナムドン"
+  },
+  "zh-TW": {
+    AED: "阿聯酋迪拉姆",
+    AUD: "澳幣",
+    CAD: "加拿大元",
+    CHF: "瑞士法郎",
+    CNY: "人民幣",
+    EUR: "歐元",
+    GBP: "英鎊",
+    HKD: "港幣",
+    INR: "印度盧比",
+    JPY: "日圓",
+    KRW: "韓元",
+    NOK: "挪威克朗",
+    NZD: "紐西蘭元",
+    SGD: "新加坡元",
+    THB: "泰銖",
+    TWD: "新台幣",
+    USD: "美元",
+    VND: "越南盾"
+  }
+};
+
+export function getLocalizedCurrencyName(
+  code: string,
+  fallbackName: string,
+  language: AppLanguage
+) {
+  return LOCALIZED_CURRENCY_NAMES[language][code] ?? fallbackName;
 }
