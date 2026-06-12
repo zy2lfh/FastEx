@@ -130,6 +130,20 @@ button {
     border-color 200ms ease;
 }
 
+.lang-toggle {
+  padding: 9px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--blue-line);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--blue-deep);
+  font-size: 0.82rem;
+  min-width: 52px;
+  transition:
+    transform 200ms ease,
+    background 200ms ease,
+    border-color 200ms ease;
+}
+
 .sort-toggle.active {
   border-color: rgba(35, 199, 232, 0.32);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(232, 241, 255, 0.98));
@@ -151,6 +165,10 @@ button {
 }
 
 .sort-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.lang-toggle:hover {
   transform: translateY(-1px);
 }
 
@@ -406,6 +424,12 @@ button {
   .sort-toggle {
     padding: 7px 11px;
     font-size: 0.8rem;
+  }
+
+  .lang-toggle {
+    padding: 7px 10px;
+    min-width: 48px;
+    font-size: 0.78rem;
   }
 
   .currency-row {

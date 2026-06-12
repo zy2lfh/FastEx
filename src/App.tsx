@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { fetchCurrencies, getCurrencyFlag } from "./lib/currencies";
+import {
+  detectInitialLanguage,
+  LANGUAGE_STORAGE_KEY,
+  messages,
+  toggleLanguage,
+  type AppLanguage
+} from "./lib/i18n";
 import { convertAmount, fetchRates, formatAmount } from "./lib/rates";
 import type { CurrencyOption, CurrencyRow, RatesSnapshot } from "./types";
 
@@ -35,10 +42,11 @@ function loadInitialRows() {
 }
 
 function App() {
+  const [language, setLanguage] = useState<AppLanguage>(() => detectInitialLanguage());
   const [currencies, setCurrencies] = useState<CurrencyOption[]>([]);
   const [rows, setRows] = useState<CurrencyRow[]>(() => loadInitialRows());
   const [sourceRowId, setSourceRowId] = useState<string>(() => loadInitialRows()[0].id);
-  const [lastUpdatedText, setLastUpdatedText] = useState<string>("");
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<number | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [snapshot, setSnapshot] = useState<RatesSnapshot | null>(null);
@@ -90,6 +98,11 @@ function App() {
     localStorage.setItem(ROWS_STORAGE_KEY, JSON.stringify(rows));
   }, [rows]);
 
+  useEffect(() => {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+  }, [language]);
+
+  const copy = messages[language];
   const currencyMap = useMemo(
     () => new Map(currencies.map((currency) => [currency.code, currency])),
     [currencies]
@@ -153,11 +166,11 @@ function App() {
           })
         );
 
-        setLastUpdatedText(new Date(latest.fetchedAt).toLocaleString());
-        setSnapshot(latest);
+          setLastUpdatedAt(latest.fetchedAt);
+          setSnapshot(latest);
       } catch {
         if (!cancelled) {
-          setError("汇率更新失败，已尝试使用缓存数据，请稍后重试。");
+          setError(copy.refreshError);
         }
       } finally {
         if (!cancelled) {
@@ -173,7 +186,7 @@ function App() {
       cancelled = true;
       window.clearInterval(timer);
     };
-  }, [sourceAmountText, sourceCode, sourceRow, currencyCodesKey]);
+  }, [sourceAmountText, sourceCode, sourceRow, currencyCodesKey, copy.refreshError]);
 
   function updateAmount(id: string, amount: string) {
     setSourceRowId(id);
@@ -220,7 +233,7 @@ function App() {
     }
 
     if (rowId === sourceRowId) {
-      return "Input currency";
+      return copy.inputCurrency;
     }
 
     try {
@@ -316,16 +329,20 @@ function App() {
     setReplaceArmedRowId(null);
   }
 
+  const lastUpdatedText = lastUpdatedAt
+    ? new Date(lastUpdatedAt).toLocaleString(language)
+    : "";
+
   return (
     <main className="shell">
       <section className="board">
         <div className="topmeta">
           <p>
             {isRefreshing
-              ? "Updating..."
+              ? copy.updating
               : lastUpdatedText
-                ? `Last updated ${lastUpdatedText}`
-                : "Loading..."}
+                ? copy.lastUpdated(lastUpdatedText)
+                : copy.loading}
           </p>
         </div>
         <div className="topbar">
@@ -334,14 +351,21 @@ function App() {
           </div>
           <div className="top-actions">
             <button
+              className="lang-toggle"
+              onClick={() => setLanguage((current) => toggleLanguage(current))}
+              type="button"
+            >
+              {copy.languageSwitch}
+            </button>
+            <button
               className={`sort-toggle ${isSortMode ? "active" : ""}`}
               onClick={toggleSortMode}
               type="button"
             >
-              ⇅ {isSortMode ? "完成排序" : "排序"}
+              ⇅ {isSortMode ? copy.doneSorting : copy.sort}
             </button>
             <button className="ghost-button" onClick={addRow} type="button">
-              + 添加
+              + {copy.add}
             </button>
           </div>
         </div>
@@ -353,12 +377,12 @@ function App() {
               key={row.id}
             >
               <button
-                aria-label={`删除 ${row.code}`}
+                aria-label={copy.deleteCurrency(row.code)}
                 className="swipe-delete"
                 onClick={() => removeRow(row.id)}
                 type="button"
               >
-                Delete
+                {copy.delete}
               </button>
               <div
                 className={`currency-row ${index === 0 ? "base active" : ""} ${isSortMode ? "sorting-enabled" : ""} ${draggingVisualId === row.id ? "floating sort-selected" : ""} ${dropTargetRowId === row.id && draggingVisualId !== row.id ? "sort-target" : ""}`}
@@ -485,20 +509,20 @@ function App() {
 
       <footer className="site-footer">
         <p>
-          FastEx was created by{" "}
+          {copy.footerCreatedPrefix}
           <a href="https://github.com/zy2lfh/FastEx" rel="noreferrer" target="_blank">
             zy2lfh
           </a>
-          .
+          {copy.footerCreatedSuffix}
         </p>
         <p>
-          Exchange-rate data is provided via{" "}
+          {copy.footerDataPrefix}
           <a href="https://www.frankfurter.app/" rel="noreferrer" target="_blank">
             Frankfurter
           </a>
-          . Rates are cached for speed and shown for reference only.
+          {copy.footerDataSuffix}
         </p>
-        <p>Always verify important amounts with your bank, card issuer, or payment provider.</p>
+        <p>{copy.footerVerify}</p>
       </footer>
     </main>
   );
