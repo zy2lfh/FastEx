@@ -4,8 +4,8 @@ import {
   detectInitialLanguage,
   getLanguageOption,
   LANGUAGE_STORAGE_KEY,
+  languageOptions,
   messages,
-  toggleLanguage,
   type AppLanguage
 } from "./lib/i18n";
 import { convertAmount, fetchRates, formatAmount } from "./lib/rates";
@@ -359,14 +359,23 @@ function App() {
             <h1>FastEx</h1>
           </div>
           <div className="top-actions">
-            <button
-              className="lang-toggle"
-              aria-label={copy.languageButton}
-              onClick={() => setLanguage((current) => toggleLanguage(current))}
-              type="button"
-            >
-              <span aria-hidden="true">{languageOption.flag}</span> {languageOption.shortLabel}
-            </button>
+            <label className="lang-select-wrap">
+              <span className="lang-select-badge" aria-hidden="true">
+                {languageOption.flag}
+              </span>
+              <select
+                aria-label={copy.languageButton}
+                className="lang-select"
+                onChange={(event) => setLanguage(event.target.value as AppLanguage)}
+                value={language}
+              >
+                {languageOptions.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.flag} {option.nativeLabel}
+                  </option>
+                ))}
+              </select>
+            </label>
             <button
               className={`sort-toggle ${isSortMode ? "active" : ""}`}
               onClick={toggleSortMode}
@@ -471,7 +480,7 @@ function App() {
                       >
                         {currencies.map((currency) => (
                           <option key={currency.code} value={currency.code}>
-                            {currency.code}
+                            {getCurrencyFlag(currency.code)} {currency.code}
                           </option>
                         ))}
                       </select>

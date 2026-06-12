@@ -25,15 +25,16 @@ export type LanguageOption = {
   code: AppLanguage;
   flag: string;
   shortLabel: string;
+  nativeLabel: string;
 };
 
 export const LANGUAGE_STORAGE_KEY = "fastex:language";
 
 export const languageOptions: LanguageOption[] = [
-  { code: "zh-CN", flag: "🇨🇳", shortLabel: "简" },
-  { code: "en-US", flag: "🇺🇸", shortLabel: "EN" },
-  { code: "ja-JP", flag: "🇯🇵", shortLabel: "日" },
-  { code: "zh-TW", flag: "🇹🇼", shortLabel: "繁" }
+  { code: "zh-CN", flag: "🇨🇳", shortLabel: "简", nativeLabel: "简体中文" },
+  { code: "en-US", flag: "🇺🇸", shortLabel: "EN", nativeLabel: "English" },
+  { code: "ja-JP", flag: "🇯🇵", shortLabel: "日", nativeLabel: "日本語" },
+  { code: "zh-TW", flag: "🇹🇼", shortLabel: "繁", nativeLabel: "繁體中文" }
 ];
 
 export const messages: Record<AppLanguage, AppMessages> = {
@@ -152,10 +153,4 @@ export function detectInitialLanguage(): AppLanguage {
 
 export function getLanguageOption(language: AppLanguage): LanguageOption {
   return languageOptions.find((option) => option.code === language) ?? languageOptions[0];
-}
-
-export function toggleLanguage(current: AppLanguage): AppLanguage {
-  const currentIndex = languageOptions.findIndex((option) => option.code === current);
-  const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % languageOptions.length : 0;
-  return languageOptions[nextIndex].code;
 }
