@@ -338,7 +338,7 @@ function App() {
               onClick={toggleSortMode}
               type="button"
             >
-              {isSortMode ? "完成排序" : "排序"}
+              ⇅ {isSortMode ? "完成排序" : "排序"}
             </button>
             <button className="ghost-button" onClick={addRow} type="button">
               + 添加
