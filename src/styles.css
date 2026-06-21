@@ -385,47 +385,41 @@ button {
   text-align: center;
 }
 
-.support-callout {
-  margin: 0 auto 12px;
-  padding: 10px 12px;
-  width: min(100%, 360px);
-  border: 1px solid rgba(14, 50, 117, 0.08);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(245, 249, 255, 0.92));
-  box-shadow: 0 10px 28px rgba(21, 58, 118, 0.06);
+.support-inline {
+  margin-bottom: 8px;
+  line-height: 1.7;
 }
 
-.support-callout p {
-  margin: 0 0 8px;
-  color: var(--text-soft);
+.bmc-inline-slot {
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: middle;
 }
 
-.support-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 11px;
-  border-radius: 999px;
-  border: 1px solid rgba(14, 50, 117, 0.12);
-  background: rgba(255, 255, 255, 0.82);
-  color: var(--blue);
-  font-size: 0.74rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  text-decoration: none;
-  transition:
-    transform 140ms ease,
-    box-shadow 140ms ease,
-    border-color 140ms ease,
-    background 140ms ease;
+.site-footer .bmc-btn-container {
+  display: inline-flex !important;
+  margin: 0 !important;
+  vertical-align: middle;
 }
 
-.support-link:hover {
-  border-color: rgba(14, 50, 117, 0.2);
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 8px 18px rgba(21, 58, 118, 0.08);
-  text-decoration: none;
-  transform: translateY(-1px);
+.site-footer .bmc-btn {
+  min-width: 0 !important;
+  height: 24px !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  line-height: 24px !important;
+}
+
+.site-footer .bmc-btn-text {
+  margin-left: 4px !important;
+  font-size: 0.72rem !important;
+}
+
+.site-footer .bmc-btn svg,
+.site-footer .bmc-btn img {
+  width: 14px !important;
+  height: 14px !important;
 }
 
 .site-footer p {
@@ -494,15 +488,11 @@ button {
     text-align: left;
   }
 
-  .support-callout {
-    width: min(100%, 332px);
-    padding: 9px 10px;
-    border-radius: 14px;
-  }
-
-  .support-link {
-    padding: 7px 10px;
-    font-size: 0.72rem;
+  .support-inline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
   }
 
   .currency-meta,

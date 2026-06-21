@@ -18,7 +18,7 @@ const DEFAULT_ROWS: CurrencyRow[] = [
 
 const REFRESH_MINUTES = 30;
 const ROWS_STORAGE_KEY = "fastex:rows";
-const SUPPORT_URL = "https://buymeacoffee.com/zy2lfh";
+const BMC_BUTTON_ID = "bmc-button-slot";
 
 function loadInitialRows() {
   try {
@@ -59,6 +59,37 @@ function App() {
   const [replaceArmedRowId, setReplaceArmedRowId] = useState<string | null>(null);
   const [touchSort, setTouchSort] = useState<{ rowId: string; y: number } | null>(null);
   const [touchSwipe, setTouchSwipe] = useState<{ rowId: string; x: number } | null>(null);
+
+  useEffect(() => {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    const container = document.getElementById(BMC_BUTTON_ID);
+    if (!container) {
+      return;
+    }
+
+    container.innerHTML = "";
+
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js";
+    script.async = true;
+    script.setAttribute("data-name", "bmc-button");
+    script.setAttribute("data-slug", "zy2lfh");
+    script.setAttribute("data-color", "#FFDD00");
+    script.setAttribute("data-emoji", "");
+    script.setAttribute("data-font", "Cookie");
+    script.setAttribute("data-text", "Buy me a coffee");
+    script.setAttribute("data-outline-color", "#000000");
+    script.setAttribute("data-font-color", "#000000");
+    script.setAttribute("data-coffee-color", "#ffffff");
+    container.appendChild(script);
+
+    return () => {
+      container.innerHTML = "";
+    };
+  }, []);
 
   useEffect(() => {
     fetchCurrencies().then(setCurrencies);
@@ -526,13 +557,10 @@ function App() {
       </section>
 
       <footer className="site-footer">
-        <div className="support-callout">
-          <p>{copy.supportText}</p>
-          <a className="support-link" href={SUPPORT_URL} rel="noreferrer" target="_blank">
-            <span aria-hidden="true">☕</span>
-            <span>{copy.supportButton}</span>
-          </a>
-        </div>
+        <p className="support-inline">
+          <span>{copy.supportText}</span>
+          <span className="bmc-inline-slot" id={BMC_BUTTON_ID} />
+        </p>
         <p>
           {copy.footerCreatedPrefix}
           <a href="https://github.com/zy2lfh/FastEx" rel="noreferrer" target="_blank">
