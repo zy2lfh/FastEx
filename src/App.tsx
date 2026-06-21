@@ -18,6 +18,7 @@ const DEFAULT_ROWS: CurrencyRow[] = [
 
 const REFRESH_MINUTES = 30;
 const ROWS_STORAGE_KEY = "fastex:rows";
+const SUPPORT_URL = "https://buymeacoffee.com/zy2lfh";
 
 function loadInitialRows() {
   try {
@@ -525,6 +526,13 @@ function App() {
       </section>
 
       <footer className="site-footer">
+        <div className="support-callout">
+          <p>{copy.supportText}</p>
+          <a className="support-link" href={SUPPORT_URL} rel="noreferrer" target="_blank">
+            <span aria-hidden="true">☕</span>
+            <span>{copy.supportButton}</span>
+          </a>
+        </div>
         <p>
           {copy.footerCreatedPrefix}
           <a href="https://github.com/zy2lfh/FastEx" rel="noreferrer" target="_blank">

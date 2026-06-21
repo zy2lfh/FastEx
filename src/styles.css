@@ -385,6 +385,49 @@ button {
   text-align: center;
 }
 
+.support-callout {
+  margin: 0 auto 12px;
+  padding: 10px 12px;
+  width: min(100%, 360px);
+  border: 1px solid rgba(14, 50, 117, 0.08);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(245, 249, 255, 0.92));
+  box-shadow: 0 10px 28px rgba(21, 58, 118, 0.06);
+}
+
+.support-callout p {
+  margin: 0 0 8px;
+  color: var(--text-soft);
+}
+
+.support-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(14, 50, 117, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--blue);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.support-link:hover {
+  border-color: rgba(14, 50, 117, 0.2);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 18px rgba(21, 58, 118, 0.08);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
 .site-footer p {
   margin: 0 0 6px;
 }
@@ -449,6 +492,17 @@ button {
 
   .rate-note {
     text-align: left;
+  }
+
+  .support-callout {
+    width: min(100%, 332px);
+    padding: 9px 10px;
+    border-radius: 14px;
+  }
+
+  .support-link {
+    padding: 7px 10px;
+    font-size: 0.72rem;
   }
 
   .currency-meta,

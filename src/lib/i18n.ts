@@ -18,6 +18,8 @@ export type AppMessages = {
   footerDataPrefix: string;
   footerDataSuffix: string;
   footerVerify: string;
+  supportText: string;
+  supportButton: string;
   languageButton: string;
 };
 
@@ -56,6 +58,8 @@ export const messages: Record<AppLanguage, AppMessages> = {
     footerDataPrefix: "汇率数据由 ",
     footerDataSuffix: " 提供。为提升速度，页面会使用缓存数据，结果仅供参考。",
     footerVerify: "如涉及重要金额，请以银行、发卡机构或实际支付平台为准。",
+    supportText: "如果 FastEx 对你有帮助，欢迎请我喝杯咖啡。",
+    supportButton: "Buy me a coffee",
     languageButton: "切换语言"
   },
   "en-US": {
@@ -76,6 +80,8 @@ export const messages: Record<AppLanguage, AppMessages> = {
     footerDataPrefix: "Exchange-rate data is provided via ",
     footerDataSuffix: ". Rates are cached for speed and shown for reference only.",
     footerVerify: "Always verify important amounts with your bank, card issuer, or payment provider.",
+    supportText: "If FastEx helps, you can buy me a coffee.",
+    supportButton: "Buy me a coffee",
     languageButton: "Switch language"
   },
   "ja-JP": {
@@ -96,6 +102,8 @@ export const messages: Record<AppLanguage, AppMessages> = {
     footerDataPrefix: "為替データは ",
     footerDataSuffix: " により提供されています。表示速度向上のためキャッシュを利用しており、結果は参考情報です。",
     footerVerify: "重要な金額は、銀行・カード会社・実際の決済サービスで必ず再確認してください。",
+    supportText: "FastEx が役に立ったら、コーヒーをごちそうしていただけるとうれしいです。",
+    supportButton: "Buy me a coffee",
     languageButton: "言語を切り替え"
   },
   "zh-TW": {
@@ -116,6 +124,8 @@ export const messages: Record<AppLanguage, AppMessages> = {
     footerDataPrefix: "匯率資料由 ",
     footerDataSuffix: " 提供。為了提升速度，頁面會使用快取資料，結果僅供參考。",
     footerVerify: "如涉及重要金額，請以銀行、發卡機構或實際支付平台為準。",
+    supportText: "如果 FastEx 對你有幫助，歡迎請我喝杯咖啡。",
+    supportButton: "Buy me a coffee",
     languageButton: "切換語言"
   }
 };
