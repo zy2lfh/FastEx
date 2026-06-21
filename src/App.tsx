@@ -19,6 +19,22 @@ const DEFAULT_ROWS: CurrencyRow[] = [
 const REFRESH_MINUTES = 30;
 const ROWS_STORAGE_KEY = "fastex:rows";
 const BMC_BUTTON_ID = "bmc-button-slot";
+const BMC_SCRIPT_ID = "bmc-button-script";
+
+declare global {
+  interface Window {
+    bmcBtnWidget?: (
+      text: string,
+      slug: string,
+      color: string,
+      emoji?: string,
+      font?: string,
+      fontColor?: string,
+      outlineColor?: string,
+      coffeeColor?: string
+    ) => string;
+  }
+}
 
 function loadInitialRows() {
   try {
@@ -70,21 +86,43 @@ function App() {
       return;
     }
 
-    container.innerHTML = "";
+    const renderButton = () => {
+      if (!window.bmcBtnWidget) {
+        return;
+      }
+
+      container.innerHTML = window.bmcBtnWidget(
+        "Buy me a coffee",
+        "zy2lfh",
+        "#FFDD00",
+        "",
+        "Cookie",
+        "#000000",
+        "#000000",
+        "#ffffff"
+      );
+    };
+
+    const existingScript = document.getElementById(BMC_SCRIPT_ID) as HTMLScriptElement | null;
+
+    if (window.bmcBtnWidget) {
+      renderButton();
+      return;
+    }
+
+    if (existingScript) {
+      existingScript.addEventListener("load", renderButton, { once: true });
+      return () => {
+        existingScript.removeEventListener("load", renderButton);
+      };
+    }
 
     const script = document.createElement("script");
+    script.id = BMC_SCRIPT_ID;
     script.src = "https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js";
     script.async = true;
-    script.setAttribute("data-name", "bmc-button");
-    script.setAttribute("data-slug", "zy2lfh");
-    script.setAttribute("data-color", "#FFDD00");
-    script.setAttribute("data-emoji", "");
-    script.setAttribute("data-font", "Cookie");
-    script.setAttribute("data-text", "Buy me a coffee");
-    script.setAttribute("data-outline-color", "#000000");
-    script.setAttribute("data-font-color", "#000000");
-    script.setAttribute("data-coffee-color", "#ffffff");
-    container.appendChild(script);
+    script.addEventListener("load", renderButton, { once: true });
+    document.body.appendChild(script);
 
     return () => {
       container.innerHTML = "";
@@ -558,15 +596,15 @@ function App() {
 
       <footer className="site-footer">
         <p className="support-inline">
+          <span>
+            {copy.footerCreatedPrefix}
+            <a href="https://github.com/zy2lfh/FastEx" rel="noreferrer" target="_blank">
+              zy2lfh
+            </a>
+            {copy.footerCreatedSuffix}
+          </span>
           <span>{copy.supportText}</span>
           <span className="bmc-inline-slot" id={BMC_BUTTON_ID} />
-        </p>
-        <p>
-          {copy.footerCreatedPrefix}
-          <a href="https://github.com/zy2lfh/FastEx" rel="noreferrer" target="_blank">
-            zy2lfh
-          </a>
-          {copy.footerCreatedSuffix}
         </p>
         <p>
           {copy.footerDataPrefix}
